@@ -90,17 +90,75 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    stack = util.Stack()
+    visited = set()
+
+    # Each stack item: (state, path_to_state)
+    stack.push((problem.getStartState(), []))
+
+    while not stack.isEmpty():
+        state, path = stack.pop()
+
+        if problem.isGoalState(state):
+            return path
+
+        if state not in visited:
+            visited.add(state)
+            # successors = problem.getSuccessors(state);
+            # for successor, action, _ in reversed(successors):
+            for successor, action, _ in problem.getSuccessors(state):
+                if successor not in visited:
+                    stack.push((successor, path + [action]))
+
+    return []  # No solution found
 
 def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    queue = util.Queue()
+    visited = set()
+
+    # Each queue item: (state, path_to_state)
+    queue.push((problem.getStartState(), []))
+
+    while not queue.isEmpty():
+        state, path = queue.pop()
+
+        if problem.isGoalState(state):
+            return path
+
+        if state not in visited:
+            visited.add(state)
+            for successor, action, _ in problem.getSuccessors(state):
+                if successor not in visited:
+                    queue.push((successor, path + [action]))
+
+    return []  # No solution found
 
 def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    pq = util.PriorityQueue()
+    visited = set()
+
+    # Each item: (state, path_to_state, total_cost)
+    start_state = problem.getStartState()
+    pq.push((start_state, [], 0), 0)
+
+    while not pq.isEmpty():
+        state, path, cost = pq.pop()
+
+        if problem.isGoalState(state):
+            return path
+
+        if state not in visited:
+            visited.add(state)
+            for successor, action, stepCost in problem.getSuccessors(state):
+                if successor not in visited:
+                    new_cost = cost + stepCost
+                    pq.push((successor, path + [action], new_cost), new_cost)
+
+    return []  # No solution found
 
 def nullHeuristic(state, problem=None) -> float:
     """
