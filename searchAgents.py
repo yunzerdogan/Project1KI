@@ -296,14 +296,15 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return (self.startingPosition, ())
 
     def isGoalState(self, state: Any):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        _, visited = state
+        return len(visited) == 4
 
     def getSuccessors(self, state: Any):
         """
@@ -317,6 +318,7 @@ class CornersProblem(search.SearchProblem):
         """
 
         successors = []
+        current_position, visited = state
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
@@ -326,7 +328,17 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-
+            x, y = current_position
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            if not self.walls[nextx][nexty]:
+                next_position = (nextx, nexty)
+                # If next_position is a corner and not yet visited, add it to visited
+                if next_position in self.corners and next_position not in visited:
+                    next_visited = visited + (next_position,)
+                else:
+                    next_visited = visited
+                successors.append(((next_position, next_visited), action, 1))
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
@@ -362,7 +374,22 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    current_position, visited = state
+    unvisited = [corner for corner in corners if corner not in visited]
+
+    heuristic = 0
+    position = current_position
+
+    # Greedily sum up the distances to the nearest unvisited corner until all are "visited"
+    while unvisited:
+        # Find the closest unvisited corner
+        distances = [(util.manhattanDistance(position, corner), corner) for corner in unvisited]
+        min_dist, closest_corner = min(distances)
+        heuristic += min_dist
+        position = closest_corner
+        unvisited.remove(closest_corner)
+
+    return heuristic
 
 
 
