@@ -104,13 +104,14 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
 
         if state not in visited:
             visited.add(state)
+            #Falls es um den reversed geht
             # successors = problem.getSuccessors(state);
             # for successor, action, _ in reversed(successors):
             for successor, action, _ in problem.getSuccessors(state):
                 if successor not in visited:
                     stack.push((successor, path + [action]))
 
-    return []  # No solution found
+    return []  
 
 def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
     """Search the shallowest nodes in the search tree first."""
@@ -133,7 +134,7 @@ def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
                 if successor not in visited:
                     queue.push((successor, path + [action]))
 
-    return []  # No solution found
+    return []  
 
 def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
     """Search the node of least total cost first."""
