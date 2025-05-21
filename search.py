@@ -171,25 +171,28 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directi
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     start_state = problem.getStartState()
-    priority_queue = util.PriorityQueue()
-    priority_queue.push((start_state, [], 0), 0 + heuristic(start_state, problem))
+    pq = util.PriorityQueue()
+    pq.push((start_state, [], 0), 0 + heuristic(start_state, problem))
     visited = {}
 
-    while not priority_queue.isEmpty():
-        current_state, actions, cost_so_far = priority_queue.pop()
-        if problem.isGoalState(current_state):
-            return actions
-        if current_state in visited and visited[current_state] <= cost_so_far:
+    while not pq.isEmpty():
+        state, path, cost = pq.pop()
+        
+        if problem.isGoalState(state):
+            return path
+        
+        if state in visited and visited[state] <= cost:
             continue
-        visited[current_state] = cost_so_far
-        for successor in problem.getSuccessors(current_state):
-            next_state, action, step_cost = successor
-            new_cost = cost_so_far + step_cost
-            new_actions = actions + [action]
-            heuristic_cost = heuristic(next_state, problem)
+        
+        visited[state] = cost
+        for successor in problem.getSuccessors(state):
+            succ_state, action, step_cost = successor
+            new_cost = cost + step_cost
+            new_actions = path + [action]
+            heuristic_cost = heuristic(succ_state, problem)
             priority = new_cost + heuristic_cost
-            if next_state not in visited or new_cost < visited.get(next_state, float('inf')):
-                priority_queue.push((next_state, new_actions, new_cost), priority)
+            if succ_state not in visited or new_cost < visited.get(succ_state, float('inf')):
+                pq.push((succ_state, new_actions, new_cost), priority)
     return []
 
 # Abbreviations
