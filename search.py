@@ -93,7 +93,6 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     stack = util.Stack()
     visited = set()
 
-    # Each stack item: (state, path_to_state)
     stack.push((problem.getStartState(), []))
 
     while not stack.isEmpty():
@@ -119,7 +118,6 @@ def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
     queue = util.Queue()
     visited = set()
 
-    # Each queue item: (state, path_to_state)
     queue.push((problem.getStartState(), []))
 
     while not queue.isEmpty():
@@ -142,7 +140,6 @@ def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
     pq = util.PriorityQueue()
     visited = set()
 
-    # Each item: (state, path_to_state, total_cost)
     start_state = problem.getStartState()
     pq.push((start_state, [], 0), 0)
 
@@ -159,7 +156,7 @@ def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
                     new_cost = cost + stepCost
                     pq.push((successor, path + [action], new_cost), new_cost)
 
-    return []  # No solution found
+    return []
 
 def nullHeuristic(state, problem=None) -> float:
     """
@@ -194,6 +191,7 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directi
             priority = new_cost + heuristic_cost
             if succ_state not in visited or new_cost < visited.get(succ_state, float('inf')):
                 pq.push((succ_state, new_actions, new_cost), priority)
+                
     return []
 
 # Abbreviations
